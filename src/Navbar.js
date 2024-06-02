@@ -1,14 +1,28 @@
 import './css/Navbar.css';
 
 function Navbar() {
+    const writeNote = () => {
+        alert("hi");
+    };
+
     return (
         <div className="navbar">
-            <ul className="nav-items">
-                <div className="small-logo">        
-                <li><img src={`${process.env.PUBLIC_URL}/codelogo.png`} href="#root" alt="A random logo depicting an HTML tag."></img></li>
+            <ul>
+                <li>
+                <div className='writenote'>
+                    <button type="button" title="Write a note!" onClick={writeNote}>
+                        <img src={`${process.env.PUBLIC_URL}/newnote.svg`} alt="Write note."></img>
+                    </button>
                 </div>
-                <li><a href="#contact">Contact</a></li>
+                </li> 
+                <li><div className='listnotes'>
+                    <button type="button" title="List notes." onClick={writeNote}>
+                        <img src={`${process.env.PUBLIC_URL}/listnotes.svg`} alt="List notes."></img>
+                    </button>
+                </div>
+                </li>
             </ul>
+            
         </div>
     );
 }
