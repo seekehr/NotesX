@@ -11,12 +11,10 @@
 }
 
 .navbar ul {
-    flex: 1;
-}
-
-.navbar li {
     list-style: none;
-    display: inline-block;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
 }
 
 button {
