@@ -98,7 +98,6 @@ export default function Component() {
             onClick={handleDarkModeToggle}
             className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-950 focus:ring-offset-2 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500 dark:focus:ring-gray-400"
           >
-            <SunMoonIcon className="h-6 w-6" />
           </Button>
         </div>
       </header>
