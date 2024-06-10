@@ -31,8 +31,4 @@ jobs:
     - name: Install dependencies
       run: npm ci
     - name: Build the application
-<<<<<<< HEAD
       run: npm run build
-=======
-      run: npm run build --if-present
->>>>>>> 93fc284c4facf42f5572dc6ce8c2f4c662853580
