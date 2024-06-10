@@ -39,8 +39,4 @@ jobs:
     - name: Install dependencies
       run: npm ci
     - name: Build the application
-      run: npm run build
-    - name: Start the server
-      run: npm start &
-      env:
-        NODE_ENV: test
+      run: npm run build --if-present
