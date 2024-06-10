@@ -4,10 +4,10 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from './ui/card'
 import { Badge } from './ui/badge';
 import { Label } from './ui/label';
 import { Input } from './ui/input';
-import { Textarea } from './ui/textarea';
-
+import { Textarea } from './ui/textarea';;
 
 export default function Component() {
+  backend.connect()
   const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState({
     title: "",
