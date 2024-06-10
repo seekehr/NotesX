@@ -44,7 +44,3 @@ jobs:
       run: npm start &
       env:
         NODE_ENV: test
-    - name: Wait for server to be ready
-      run: sleep 10
-    - name: Stop the server
-      run: kill $(jobs -p)
