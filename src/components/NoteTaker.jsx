@@ -8,20 +8,13 @@ import { Textarea } from './ui/textarea';
 
 
 export default function Component() {
-  const [notes, setNotes] = useState([
-    {
-      id: 1,
-      title: "mein raat ko doodh peeta hun",
-      content: "ddudududududududududu",
-      tags: ["doodh", "dudh"],
-    },
-  ])
+  const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState({
     title: "",
     content: "",
     tags: [],
   })
-  const [tags, setTags] = useState(["doodh", "dudh"])
+  const [tags, setTags] = useState([])
   const [activeCategory, setActiveCategory] = useState("all")
   const [searchTerm, setSearchTerm] = useState("")
   const [hoveredNote, setHoveredNote] = useState([])
@@ -329,7 +322,11 @@ export default function Component() {
                   className={`${
                     isDarkMode ? "bg-gray-500 text-white" : "bg-gray-50 dark:bg-gray-500 dark:text-white"
                   } text-2xl font-bold`}
+                  maxLength={70}
                 />
+              </div>
+              <div className="text-gray-500">
+                <p> {fullscreenNote.title.length + "/" + 70} </p>
               </div>
               <div className="flex-1">
                 <Label htmlFor="content" className={`text-lg font-bold ${isDarkMode ? "text-white" : ""}`}>
