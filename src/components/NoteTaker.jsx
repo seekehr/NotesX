@@ -1,19 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from './ui/button';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from './ui/card';
 import { Badge } from './ui/badge';
 import { Label } from './ui/label';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';;
+import axios from 'axios';
 
 export default function Component() {
-  backend.connect()
   const [notes, setNotes] = useState([])
+
   const [newNote, setNewNote] = useState({
     title: "",
     content: "",
     tags: [],
   })
+
   const [tags, setTags] = useState([])
   const [activeCategory, setActiveCategory] = useState("all")
   const [searchTerm, setSearchTerm] = useState("")
@@ -23,10 +25,31 @@ export default function Component() {
   const [fullscreenNote, setFullscreenNote] = useState(null)
   const [isDarkMode, setIsDarkMode] = useState(false)
 
+
+  function loadNotes() {
+    console.log("hi");
+    axios.get('http://localhost:5000/api/notes/')
+    .then(response => {
+        const data = response.data;
+        for (let index in data) {
+          let datum = data[index];
+          datum.tags = datum.tags.split(",");
+          const newTags = datum.tags.filter((tag) => !tags.includes(tag))
+          setTags([...tags, ...newTags])
+          setNotes([...notes, { ...datum, id: datum.id }])
+        }
+    })
+    .catch(error => {
+        console.error('There was an error creating the note:', error);
+    });
+  }
+
+  useEffect(() => loadNotes, []);
+  
   const handleNoteCreate = () => {
     const newTags = newNote.tags.filter((tag) => !tags.includes(tag))
     setTags([...tags, ...newTags])
-    setNotes([...notes, { ...newNote, id: notes.length + 1 }])
+    setNotes([...notes, { ...newNote } ])
     setNewNote({ title: "", content: "", tags: [] })
   }
 
@@ -62,6 +85,38 @@ export default function Component() {
     })
   }
 
+  function saveNoteBackend(note) {
+    let noteData = {
+      noteid: note.id,
+      title: note.title,
+      content:note.content,
+      tags: note.tags.toString()
+    };
+
+    axios.post('http://localhost:5000/api/create/', null, {
+      params: noteData
+    })
+    .then(response => {
+        console.log('Note created:', response.data);
+    })
+    .catch(error => {
+        console.error('There was an error creating the note:', error);
+    });
+  }
+
+  function deleteNoteBackend(note) {
+    axios.post('http://localhost:5000/api/delete/', null, {
+      params: {noteId: note.id}
+    })
+    .then(() => {
+        console.log('Note deleted.');
+    })
+    .catch(error => {
+        console.error('There was an error deleting the note:', error);
+    });
+  }
+
+
   const filteredNotes =
     activeCategory === "all"
       ? notes.filter((note) => note.tags.some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase())))
@@ -70,6 +125,7 @@ export default function Component() {
             note.tags.includes(activeCategory) &&
             note.tags.some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase())),
         )
+
   return (
     <div className={`flex h-screen w-full flex-col ${isDarkMode ? "dark" : ""}`}>
       <header className="bg-gray-800 py-4 px-6 text-white flex items-center justify-between">
@@ -98,6 +154,7 @@ export default function Component() {
             onClick={handleDarkModeToggle}
             className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-950 focus:ring-offset-2 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500 dark:focus:ring-gray-400"
           >
+          {isDarkMode ? <SunMoonIcon className="h-6 w-6"></SunMoonIcon> : <MoonIcon className="h-6 w-6"></MoonIcon>}
           </Button>
         </div>
       </header>
@@ -174,7 +231,7 @@ export default function Component() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className={isDarkMode ? "text-white" : "text-gray-800"}>{note.content}</p>
+                  <p className={isDarkMode ? "overflow-hidden text-white" : "overflow-hidden text-gray-800"}>{note.content}</p>
                 </CardContent>
                 <CardFooter>
                   <div className="flex items-center justify-between">
@@ -182,7 +239,10 @@ export default function Component() {
                       variant="ghost"
                       size="icon"
                       className="absolute bottom-2 left-2"
-                      onClick={() => handleNoteDelete(note.id)}
+                      onClick={() => {
+                        deleteNoteBackend(note)
+                        handleNoteDelete(note.id)
+                      }}
                     >
                       <TrashIcon className="h-4 w-4" />
                       <span className="sr-only">Delete note</span>
@@ -258,7 +318,13 @@ export default function Component() {
               <CardFooter>
                 <div className="flex justify-end">
                   <Button
-                    onClick={handleNoteCreate}
+                    onClick={
+                      () => {
+                        newNote.id = notes.length + 1;
+                        saveNoteBackend(newNote);
+                        handleNoteCreate();
+                      }
+                    }
                     className={`${
                       isDarkMode
                         ? "bg-gray-500 text-white hover:bg-gray-400"
@@ -345,7 +411,10 @@ export default function Component() {
               </div>
               <div className="mt-4 flex justify-end">
                 <Button
-                  onClick={handleFullscreenSave}
+                  onClick={ () => {
+                    saveNoteBackend(fullscreenNote);
+                    handleFullscreenSave();
+                  }}
                   className={`${
                     isDarkMode
                       ? "bg-gray-500 text-white hover:bg-gray-400"
