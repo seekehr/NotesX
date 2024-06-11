@@ -9,3 +9,4 @@ Backend server runs on port 5000 (e.g http://localhost:5000) and frontend on 300
 
 Enjoy!
 
+![image](https://github.com/seekehr/NotesX/assets/83727884/3c572479-3734-4c3c-9b62-f4916fea9890)
